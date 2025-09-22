@@ -291,21 +291,21 @@
     document.getElementById('spooky2').style.opacity = (scrollPercent > 0.32 && scrollPercent < 0.46) ? '1' : '0';
     document.getElementById('spooky3').style.opacity = (scrollPercent > 0.46 && scrollPercent < 0.7) ? '1' : '0';
 
-    // Warning words appear after 70% scroll
-    if(scrollPercent > 0.7){
+    // Show warning words as a popup near the bottom, then hide and show button
+    if (scrollPercent > 0.85 && scrollPercent <= 0.93) {
       warning.style.opacity = 1;
-      shownWords = Math.min(Math.floor((scrollPercent-0.7)/0.03)+1, warningWords.length);
-      warning.innerHTML = warningWords.slice(0, shownWords).join(" ");
+      warning.innerHTML = warningWords.join(" ");
+      enterBtn.style.display = "none";
+    } else if (scrollPercent > 0.93) {
+      warning.style.opacity = 0;
+      enterBtn.style.display = "block";
     } else {
-      warning.style.opacity = 0; // disappear if scrolling up
-      shownWords = 0;
+      warning.style.opacity = 0;
+      enterBtn.style.display = "none";
     }
 
-    // Enter Hell button after 95%
-    enterBtn.style.display = scrollPercent > 0.95 ? "block" : "none";
-
     // Hide arrow near bottom
-    scrollArrow.style.display = scrollPercent > 0.95 ? "none" : "block";
+    scrollArrow.style.display = scrollPercent > 0.93 ? "none" : "block";
   });
 
   // Scroll arrow click scrolls down a bit
