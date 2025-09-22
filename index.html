@@ -119,10 +119,10 @@
     position: fixed;
     top: 40%;
     left: 50%;
-    transform: translateX(-50%);
-  font-size: 40px;
-  font-family: 'IM Fell English SC', 'UnifrakturCook', Georgia, serif;
-  font-weight: 700;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-family: 'IM Fell English SC', 'UnifrakturCook', Georgia, serif;
+    font-weight: 700;
     color: #ff3300;
     text-shadow:
       0 0 8px #ff6600,
@@ -135,6 +135,18 @@
     text-align: center;
     letter-spacing: 2px;
     transition: opacity 0.3s;
+    width: 100vw;
+  }
+  .warning-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateX(-80px);
+    transition: opacity 0.4s, transform 0.6s cubic-bezier(0.7,0,0.3,1);
+    will-change: opacity, transform;
+  }
+  .warning-word.visible {
+    opacity: 1;
+    transform: translateX(0);
   }
 
   /* Enter Hell Button */
@@ -292,15 +304,25 @@
     document.getElementById('spooky3').style.opacity = (scrollPercent > 0.46 && scrollPercent < 0.7) ? '1' : '0';
 
     // Show warning words as a popup near the bottom, then hide and show button
-    if (scrollPercent > 0.85 && scrollPercent <= 0.93) {
+    // Slow down the word-by-word reveal so the last word is always visible
+    const revealStart = 0.85;
+    const revealEnd = 0.97;
+    if (scrollPercent > revealStart && scrollPercent <= revealEnd) {
       warning.style.opacity = 1;
-      warning.innerHTML = warningWords.join(" ");
+      let totalWords = warningWords.length;
+      let progress = (scrollPercent - revealStart) / (revealEnd - revealStart);
+      let wordsToShow = Math.max(1, Math.ceil(progress * totalWords));
+      if (wordsToShow > totalWords) wordsToShow = totalWords;
+      warning.innerHTML = warningWords.map((w, i) => `<span class=\"warning-word${i < wordsToShow ? ' visible' : ''}\">${w}</span>`).join(' ');
       enterBtn.style.display = "none";
-    } else if (scrollPercent > 0.93) {
-      warning.style.opacity = 0;
+    } else if (scrollPercent > 0.95) {
+      // Show both the warning and the button at the end
+      warning.style.opacity = 1;
+      warning.innerHTML = warningWords.map((w) => `<span class=\"warning-word visible\">${w}</span>`).join(' ');
       enterBtn.style.display = "block";
     } else {
       warning.style.opacity = 0;
+      warning.innerHTML = '';
       enterBtn.style.display = "none";
     }
 
