@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circles of Hell</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #000;
+  }
+  body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: 'IM Fell English SC', 'Georgia', serif;
+    color: #fff;
+  }
+  .typewriter {
+    font-size: 2em;
+    margin-left: 60px;
+    margin-top: 120px;
+    letter-spacing: 1.5px;
+    white-space: pre;
+    text-shadow: 0 0 10px #ff3300, 0 0 20px #000;
+  }
+  #choices {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 40px;
+    margin-left: 60px;
+    gap: 24px;
+  }
+  .choice-text {
+    font-size: 1.4em;
+    color: #fff;
+    cursor: pointer;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    transition: color 0.2s, text-shadow 0.2s;
+    padding: 6px 0;
+    user-select: none;
+    display: block;
+  }
+  .choice-text:hover {
+    color: #ffcc00;
+    text-shadow: 0 0 8px #ff3300, 0 0 16px #b30000;
+  }
+  #centered-typewriter {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: 'IM Fell English SC', 'Georgia', serif;
+    font-size: 2.2em;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px #ff3300, 0 0 20px #000;
+    white-space: pre;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div id="typewriter" class="typewriter"></div>
+  <div id="choices"></div>
+  <div id="centered-typewriter"></div>
+
+<script>
+  const typewriterDiv = document.getElementById('typewriter');
+  const choicesDiv = document.getElementById('choices');
+  const centerDiv = document.getElementById('centered-typewriter');
+
+  const welcomeMessage = "You're a very curious man, I see. Welcome to hell.";
+  let idx = 0;
+
+  function typeWriter() {
+    if (idx < welcomeMessage.length) {
+      typewriterDiv.innerHTML += welcomeMessage.charAt(idx);
+      idx++;
+      setTimeout(typeWriter, 45);
+    } else {
+      showInitialChoices();
+    }
+  }
+
+  function showInitialChoices() {
+    showChoices([
+      { text: '> Ignore him and walk past him', callback: ignoreResponse },
+      { text: '> Who are you?', callback: whoResponse }
+    ]);
+  }
+
+  function showChoices(options) {
+    choicesDiv.innerHTML = '';
+    choicesDiv.style.display = 'flex';
+    choicesDiv.style.flexDirection = 'column';
+    options.forEach(opt => {
+      const div = document.createElement('div');
+      div.className = 'choice-text';
+      div.innerHTML = opt.text;
+      div.onclick = () => {
+        typewriterDiv.style.display = 'none';
+        choicesDiv.style.display = 'none';
+        opt.callback();
+      };
+      choicesDiv.appendChild(div);
+    });
+  }
+
+  // IGNORE RESPONSE
+  function ignoreResponse() {
+    centerDiv.style.display = 'flex';
+    centerDiv.innerHTML = '';
+    showCenteredTypewriterParagraphs([
+      "Ignoring me? Bold… or foolish.",
+      "I do enjoy a mortal who pretends not to notice the fire beneath their feet.",
+      "Let’s see how long that silence lasts."
+    ], showIgnoreNextChoices);
+  }
+
+  function showIgnoreNextChoices() {
+    centerDiv.style.display = 'none';
+    showChoices([
+      { text: '> Continue to wander around', callback: ignoreWanderResponse },
+      { text: '> At a second thought, I could use some help', callback: ignoreHelpResponse }
+    ]);
+  }
+
+  function ignoreWanderResponse() {
+    centerDiv.style.display = 'flex';
+    centerDiv.innerHTML = '';
+    showCenteredTypewriterParagraphs([
+      "To wander here is to choose your torment with your own two feet."
+    ], showIgnoreWanderNextChoice);
+  }
+
+  function showIgnoreWanderNextChoice() {
+    centerDiv.style.display = 'none';
+    showChoices([
+      { text: '> Fine, I could use some help', callback: ignoreHelpResponse }
+    ]);
+  }
+
+  function ignoreHelpResponse() {
+    centerDiv.style.display = 'flex';
+    centerDiv.innerHTML = '';
+    showCenteredTypewriterParagraphs([
+      "Ahhh, the proud always bend eventually.",
+      "Very well… let me show you what lies ahead."
+    ]);
+  }
+
+  // WHO ARE YOU RESPONSE
+  function whoResponse() {
+    centerDiv.style.display = 'flex';
+    centerDiv.innerHTML = '';
+    showCenteredTypewriterParagraphs([
+      "Ah, your curiosity never ends!",
+      "Names are fragile things,",
+      "easily lost in shadows…",
+      "But you may call me your companion,",
+      "your tormentor, or simply…",
+      "the one who delights in watching mortals squirm."
+    ], showWhoNextChoice);
+  }
+
+  function showWhoNextChoice() {
+    centerDiv.style.display = 'none';
+    showChoices([
+      { text: '> Ah… so you’re just your usual devil, but a tour guide. That’s… quite sad.', callback: devilMockResponse }
+    ]);
+  }
+
+  function devilMockResponse() {
+    centerDiv.style.display = 'flex';
+    centerDiv.innerHTML = '';
+    showCenteredTypewriterParagraphs([
+      "You're not just curious, but bold too…",
+      "such bold words from such fragile flesh.",
+      "Very well…",
+      "Let’s see if your courage lasts through my little playground."
+    ], showProceedDiscoveryChoice);
+  }
+
+  function showProceedDiscoveryChoice() {
+    centerDiv.style.display = 'none';
+    showChoices([
+      { text: '> I’m always up for new discovery', callback: devilFinalResponse }
+    ]);
+  }
+
+  function devilFinalResponse() {
+    centerDiv.style.display = 'flex';
+    centerDiv.innerHTML = '';
+    showCenteredTypewriterParagraphs([
+      "Very well, I shall guide you in this INFERNO."
+    ]);
+  }
+
+  // TYPEWRITER EFFECT
+  function showCenteredTypewriterParagraphs(lines, callback) {
+    let currentText = '';
+    let lineIdx = 0;
+
+    function typeLine() {
+      let i = 0;
+      const line = lines[lineIdx];
+      function typeChar() {
+        if (i < line.length) {
+          centerDiv.innerHTML = currentText + line.slice(0, i+1);
+          i++;
+          setTimeout(typeChar, 24);
+        } else {
+          currentText += line + '<br>';
+          lineIdx++;
+          if (lineIdx < lines.length) {
+            setTimeout(typeLine, 700);
+          } else if (callback) {
+            setTimeout(callback, 800);
+          }
+        }
+      }
+      typeChar();
+    }
+    typeLine();
+  }
+
+  window.onload = typeWriter;
+</script>
+</body>
+</html>
