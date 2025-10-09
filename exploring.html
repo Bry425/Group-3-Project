@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dante’s Inferno Scroll</title>
+
+<!-- Local fonts from fonts folder -->
+<style>
+  @font-face {
+    font-family: 'IM Fell English SC';
+    src: url('fonts/IMFellEnglishSC-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'UnifrakturCook';
+    src: url('fonts/UnifrakturCook-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Dancing Script';
+    src: url('fonts/DancingScript-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Dancing Script';
+    src: url('fonts/DancingScript-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+  }
+</style>
+
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%; overflow: hidden;
+    background: black;
+    transition: background 1s ease;
+  }
+
+  body {
+    background: url('1.jpg') no-repeat center center;
+    background-size: cover;
+  }
+
+  #intro {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: black;
+    color: #f5f2e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(2rem, 10vw, 6rem);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1.5s ease;
+    flex-direction: column;
+    text-transform: uppercase;
+    font-family: 'IM Fell English SC', 'UnifrakturCook', serif;
+    text-shadow: 0 0 0.7vw #b30000, 0 0 1.5vw #660000;
+    overflow: hidden;
+  }
+
+  #intro span {
+    opacity: 0;
+    transition: opacity 1s ease;
+    position: absolute;
+  }
+
+  .ghostText {
+    position: absolute;
+    color: #fff;
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(0.8rem, 2vw, 2rem);
+    opacity: 0;
+    white-space: nowrap;
+    animation: fadeGhost 2.5s ease forwards;
+    text-shadow: 0 0 0.2vw #fff, 0 0 0.5vw #888;
+    pointer-events: none;
+  }
+
+  @keyframes fadeGhost {
+    0%   { opacity: 0; }
+    30%  { opacity: 0.9; }
+    70%  { opacity: 0.7; }
+    100% { opacity: 0; }
+  }
+
+  #info {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%; max-width: 900px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: clamp(1rem, 3vw, 3rem);
+    border: 0.2vw solid #a38b5d;
+    border-radius: 1vw;
+    color: #f5f2e8;
+    font-family: 'IM Fell English SC', serif;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    line-height: 1.6;
+    text-align: left;
+    display: none;
+    text-shadow: 0 0 0.2vw black;
+    flex-direction: column;
+  }
+
+  #info h2 {
+    text-align: center;
+  }
+
+  #nextBtn {
+    align-self: center;
+    margin-top: 2vh;
+    padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 3vw, 2rem);
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    border: 0.15vw solid #a38b5d;
+    border-radius: 0.5vw;
+    background: rgba(0,0,0,0.7);
+    color: #f5f2e8;
+    cursor: pointer;
+    font-family: 'IM Fell English SC', serif;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  #exitButton:hover {
+    background: rgba(163, 139, 93, 0.7);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  #whiteBlink {
+    transition: opacity 0.5s ease;
+  }
+
+  #circleJump {
+    position: fixed;
+    top: 2vh;
+    right: 2vw;
+    z-index: 10000;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    background: rgba(0,0,0,0.7);
+    color: #f5f2e8;
+    padding: 0.5vh 1vw;
+    display: none;
+  }
+
+  #startOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div id="startOverlay"></div>
+
+<div id="blackScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; display: none; justify-content: center; align-items: center; z-index: 10001;">
+  <div id="quoteContainer" style="text-align: center; color: white; font-family: 'IM Fell English SC', serif;">
+    <div id="englishQuote" style="font-size: clamp(1.5rem, 4vw, 3rem); opacity: 0; transform: translateY(20px); transition: opacity 1s ease, transform 1s ease;">And we came out to see once more the stars.</div>
+    <div id="italianQuote" style="font-size: clamp(1rem, 2.5vw, 2rem); opacity: 0; transform: translateY(20px); transition: opacity 1s ease, transform 1s ease; margin-top: 1rem; font-style: italic;">E quindi uscimmo a riveder le stelle.</div>
+  </div>
+</div>
+
+<div id="exitButton" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 1rem 2rem; background: rgba(0,0,0,0.7); color: #f5f2e8; border: 0.2vw solid #a38b5d; cursor: pointer; font-family: 'IM Fell English SC', serif; font-size: 1.2rem; display: none; z-index: 10002;">Exit</div>
+
+<div id="exitTransitionOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 10004; pointer-events: none; display: none;"></div>
+
+<div id="intro">
+  <span id="circle">1st Circle</span>
+  <span id="name">Limbo</span>
+</div>
+
+<div id="info">
+  <h2>Limbo — The First Circle of Hell</h2>
+  <p><strong>Who’s Here:</strong> Virtuous pagans and the unbaptized — such as Homer, Socrates, and Julius Caesar.</p>
+  <p><strong>What They Did:</strong> Lived good and noble lives but without the light of Christian faith.</p>
+  <p><strong>Punishment:</strong> No torment, only eternal longing — peace without salvation, forever separated from God.</p>
+  <button id="nextBtn">Next</button>
+</div>
+
+<select id="circleJump">
+  <option value="">Go to Circle...</option>
+  <option value="0">1. Limbo</option>
+  <option value="1">2. Lust</option>
+  <option value="2">3. Gluttony</option>
+  <option value="3">4. Greed</option>
+  <option value="4">5. Anger</option>
+  <option value="5">6. Heresy</option>
+  <option value="6">7. Violence</option>
+  <option value="7">8. Fraud</option>
+  <option value="8">9. Treachery</option>
+</select>
+
+<script>
+const circleEl = document.getElementById('circle');
+const nameEl = document.getElementById('name');
+const intro = document.getElementById('intro');
+const info = document.getElementById('info');
+const nextBtn = document.getElementById('nextBtn');
+const circleJump = document.getElementById('circleJump');
+
+const circles = [
+  {
+    name: "Limbo",
+    who: "Virtuous pagans and the unbaptized (Homer, Socrates, Julius Caesar)",
+    did: "Lived honorable lives but lacked the light of Christian faith.",
+    punishment: "No physical suffering — only eternal separation from God, a peace without salvation.",
+    punishments: ["Soft murmurs...", "Gentle sighs...", "Whispers of regret..."]
+  },
+  {
+    name: "Lust",
+    who: "Cleopatra, Helen of Troy, Paris, Achilles, and others driven by passion.",
+    did: "Allowed their lustful desires to overcome reason and morality.",
+    punishment: "Blown forever by violent winds, symbolizing the power of uncontrolled passion.",
+    punishments: ["Howl of wind...", "Cries of lovers lost...", "Storms of desire..."]
+  },
+  {
+    name: "Gluttony",
+    who: "Those who overindulged in food, drink, and pleasure.",
+    did: "Worshiped appetite and pleasure over self-control and moderation.",
+    punishment: "Lie in filthy slush under endless icy rain, clawed by Cerberus.",
+    punishments: ["Splatter...", "Drip...", "Growl of Cerberus...", "Cold rain falls..."]
+  },
+  {
+    name: "Greed",
+    who: "The hoarders and wasters — clerics, misers, and spendthrifts.",
+    did: "Obsessed over wealth, either hoarding it selfishly or wasting it foolishly.",
+    punishment: "Push enormous weights against each other, shouting blame eternally.",
+    punishments: ["Clank...", "Grunt...", "Thud...", "Clash of gold..."]
+  },
+  {
+    name: "Anger",
+    who: "The wrathful and the sullen.",
+    did: "The wrathful acted in rage; the sullen repressed their hatred in silence.",
+    punishment: "The wrathful fight endlessly on the surface of the Styx; the sullen lie beneath, choking on mud.",
+    punishments: ["Splash...", "SCREAM...", "Rage echoes...", "Silent bubbles rise..."]
+  },
+  {
+    name: "Heresy",
+    who: "Epicurus and those who denied the immortality of the soul.",
+    did: "Rejected spiritual truth and believed the soul dies with the body.",
+    punishment: "Entombed in burning graves for eternity.",
+    punishments: ["Hiss...", "Crackle...", "Screams within stone...", "Flicker of flames..."]
+  },
+  {
+    name: "Violence",
+    who: "Murderers, suicides, blasphemers, sodomites, and usurers.",
+    did: "Committed violence against others, themselves, God, nature, or art.",
+    punishment: "Murderers boiled in blood, suicides turned to trees, blasphemers on burning sand under rain of fire.",
+    punishments: ["Boil...", "Snap of branch...", "Harpies screech...", "Fire rain falls..."]
+  },
+  {
+    name: "Fraud",
+    who: "Deceivers, flatterers, corrupt officials, hypocrites, thieves, false prophets.",
+    did: "Used deception, corruption, and trickery for personal gain.",
+    punishment: "Divided into ten bolgias with unique torments — excrement, flames, serpents, and disease.",
+    punishments: ["Lie!", "Deceive!", "Serpents hiss...", "Burning tongues..."]
+  },
+  {
+    name: "Treachery",
+    who: "Traitors to family, country, guests, and lords — including Judas, Brutus, and Cassius.",
+    did: "Betrayed those who placed their trust in them.",
+    punishment: "Frozen in the ice of Cocytus, the deeper the betrayal, the deeper the freeze. At the center, Satan devours the three greatest traitors.",
+    punishments: ["Crack...", "Whisper of frost...", "Frozen tears...", "Still silence..."]
+  }
+];
+
+function ordinal(num){
+  const endings=["th","st","nd","rd"];
+  const v=num%100;
+  return num+(endings[(v-20)%10]||endings[v]||"th");
+}
+
+function spawnGhostText(text){
+  const el = document.createElement("div");
+  el.className = "ghostText";
+  el.textContent = text;
+  el.style.top = (Math.random() * 90) + "%";
+  el.style.left = (Math.random() * 90) + "%";
+  intro.appendChild(el);
+  const fontSize = parseFloat(getComputedStyle(el).fontSize);
+  const duration = Math.min(2500 + fontSize * 50, 5000);
+  el.style.animationDuration = duration + "ms";
+  setTimeout(() => el.remove(), duration);
+}
+
+let current = 0;
+
+function updateInfo(index){
+  info.querySelector('h2').textContent = `${ordinal(index+1)} Circle — ${circles[index].name}`;
+  info.innerHTML = `
+    <h2>${ordinal(index+1)} Circle — ${circles[index].name}</h2>
+    <p><strong>Who’s Here:</strong> ${circles[index].who}</p>
+    <p><strong>What They Did:</strong> ${circles[index].did}</p>
+    <p><strong>Punishment:</strong> ${circles[index].punishment}</p>
+    <button id="nextBtn">Next</button>
+  `;
+  info.querySelector("#nextBtn").addEventListener("click", nextCircle);
+}
+
+function playIntro(index){
+  const num = index + 1;
+  circleEl.textContent = ordinal(num) + " Circle";
+  nameEl.textContent = circles[index].name;
+
+  // Stop all previous sounds before starting new circle
+  const allAudios = ['scarySound', 'inhaleExhale', 'windSound', 'rainSound', 'rockSound', 'riverSound', 'fireSound', 'creakSound'];
+  allAudios.forEach(audioId => {
+    const audio = document.getElementById(audioId);
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  });
+
+  // Clear rock sound interval if it exists
+  if (window.rockIntervalId) {
+    clearInterval(window.rockIntervalId);
+    window.rockIntervalId = null;
+  }
+  
+  // Clear fire interval if it exists
+  if (window.fireIntervalId) {
+    clearInterval(window.fireIntervalId);
+    window.fireIntervalId = null;
+  }
+
+  intro.style.display = "flex";
+  info.style.display = "none";
+  circleJump.style.display = "none";
+
+  intro.style.opacity = 1;
+  circleEl.style.opacity = 0;
+  nameEl.style.opacity = 0;
+
+  // Play scary sound effect for all circles
+  const scarySound = document.getElementById('scarySound');
+  if (scarySound) {
+    scarySound.currentTime = 0;
+    scarySound.volume = 1.0;
+    scarySound.play().catch((err) => console.log('Audio blocked:', err));
+  }
+
+  setTimeout(()=>{circleEl.style.opacity = 1;}, 500);
+  setTimeout(()=>{circleEl.style.opacity = 0; nameEl.style.opacity = 1;}, 2500);
+  setTimeout(()=>{nameEl.style.opacity = 0;}, 4500);
+
+  setTimeout(()=>{
+    // Play golden freddy ambience only for 1st circle (Limbo)
+    if (index === 0) {
+      const inhaleExhale = document.getElementById('inhaleExhale');
+      if (inhaleExhale) {
+        inhaleExhale.currentTime = 0;
+        inhaleExhale.volume = 1.0;
+        inhaleExhale.play().catch((err) => console.log('Audio blocked:', err));
+      }
+    }
+
+    // Play wind sound for 2nd circle (Lust)
+    if (index === 1) {
+      setTimeout(() => {
+        const windSound = document.getElementById('windSound');
+        if (windSound) {
+          windSound.currentTime = 0;
+          windSound.volume = 0.7; // Very subtle volume for wind sound
+          windSound.play().catch((err) => console.log('Wind audio blocked:', err));
+        }
+      }, 1000);
+    }
+
+    // Play rain sound for 3rd circle (Gluttony)
+    if (index === 2) {
+      setTimeout(() => {
+        const rainSound = document.getElementById('rainSound');
+        if (rainSound) {
+          rainSound.currentTime = 0;
+          rainSound.volume = 0.7; // Subtle volume for rain sound
+          rainSound.play().catch((err) => console.log('Rain audio blocked:', err));
+        }
+      }, 1000);
+    }
+
+    // Play falling rock sound every 5 seconds for 4th circle (Greed)
+    if (index === 3) {
+      const rockInterval = setInterval(() => {
+        const rockSound = document.getElementById('rockSound');
+        if (rockSound && !rockSound.paused && !rockSound.ended) {
+          // Don't play if already playing
+          return;
+        }
+        if (rockSound) {
+          rockSound.currentTime = 0;
+          rockSound.volume = 0.8;
+          rockSound.play().catch((err) => console.log('Rock audio blocked:', err));
+        }
+      }, 5000);
+      
+      // Store interval ID for cleanup later
+      window.rockIntervalId = rockInterval;
+    }
+
+    // Play soothing river sound for 5th circle (Anger)
+    if (index === 4) {
+      setTimeout(() => {
+        const riverSound = document.getElementById('riverSound');
+        if (riverSound) {
+          riverSound.currentTime = 0;
+          riverSound.volume = 1.0;
+          riverSound.play().catch((err) => console.log('River audio blocked:', err));
+        }
+      }, 1000);
+    }
+
+    // Play fire sound for 6th circle (Heresy)
+    if (index === 5) {
+      setTimeout(() => {
+        const fireSound = document.getElementById('fireSound');
+        if (fireSound) {
+          fireSound.currentTime = 0;
+          fireSound.volume = 1.0;
+          fireSound.play().catch((err) => console.log('Fire audio blocked:', err));
+        }
+      }, 1000);
+    }
+
+    // Play fire sound at random intervals for 7th circle (Violence)
+    if (index === 6) {
+      // Fire sound every ~6 seconds with random variation
+      const fireInterval = setInterval(() => {
+        const fireSound = document.getElementById('fireSound');
+        if (fireSound && !fireSound.paused && !fireSound.ended) {
+          return; // Don't play if already playing
+        }
+        if (fireSound) {
+          fireSound.currentTime = 0;
+          fireSound.volume = 1.0;
+          fireSound.play().catch((err) => console.log('Fire audio blocked:', err));
+        }
+      }, 6000 + Math.random() * 3000); // 6-9 seconds random interval
+      
+      // Store interval ID for cleanup later
+      window.fireIntervalId = fireInterval;
+    }
+
+    // Play creaking wood sound for 8th and 9th circles (Fraud and Treachery)
+    if (index === 7 || index === 8) {
+      setTimeout(() => {
+        const creakSound = document.getElementById('creakSound');
+        if (creakSound) {
+          creakSound.currentTime = 0;
+          creakSound.volume = 1.0;
+          creakSound.play().catch((err) => console.log('Creak audio blocked:', err));
+          console.log('Creak sound started for circle', index + 1); // Debug log
+        }
+      }, 1000);
+    }
+
+    let i = 0;
+    const punishments = circles[index].punishments;
+    const interval = setInterval(()=>{
+      spawnGhostText(punishments[i]);
+      i++;
+      if(i >= punishments.length){
+        clearInterval(interval);
+        setTimeout(()=>{intro.style.opacity = 0;}, 2000);
+        setTimeout(()=>{
+          intro.style.display = "none";
+          info.style.display = "flex";
+          circleJump.style.display = "block";
+          updateInfo(index);
+        }, 3500);
+      }
+    }, 2000);
+  }, 5000);
+}
+
+function nextCircle(){
+  if(current < circles.length - 1){
+    current++;
+    document.body.style.background = `url('${current+1}.jpg') no-repeat center center`;
+    document.body.style.backgroundSize = "cover";
+    playIntro(current);
+  } else if (current === 8) { // 9th circle (Treachery) - initiate exit sequence
+    const btn = document.getElementById("nextBtn");
+    btn.textContent = "Exit";
+    btn.addEventListener("click", initiateExitSequence);
+  } else {
+    const btn = document.getElementById("nextBtn");
+    btn.textContent = "End";
+    btn.disabled = true;
+  }
+}
+
+circleJump.addEventListener('change', ()=>{
+  const index = parseInt(circleJump.value);
+  if(!isNaN(index)){
+    current = index;
+    document.body.style.background = `url('${current+1}.jpg') no-repeat center center`;
+    document.body.style.backgroundSize = "cover";
+    playIntro(current);
+    circleJump.value = "";
+  }
+});
+
+// Start overlay - auto-start the experience
+const startOverlay = document.getElementById('startOverlay');
+let hasStarted = false;
+
+// Auto-start after a brief delay to ensure page loads
+setTimeout(() => {
+  startOverlay.style.display = 'none';
+  hasStarted = true;
+  startBlinkingSequence();
+}, 500);
+
+function startBlinkingSequence() {
+  // Create blinking overlay
+  const blinkingOverlay = document.createElement('div');
+  blinkingOverlay.id = 'blinkingOverlay';
+  blinkingOverlay.style.position = 'fixed';
+  blinkingOverlay.style.top = '0';
+  blinkingOverlay.style.left = '0';
+  blinkingOverlay.style.width = '100%';
+  blinkingOverlay.style.height = '100%';
+  blinkingOverlay.style.background = 'black';
+  blinkingOverlay.style.zIndex = '99999';
+  document.body.appendChild(blinkingOverlay);
+
+  let blinkCount = 0;
+  const maxBlinks = 4; // 3-4 blinks as requested
+  const blinkDuration = 1200; // milliseconds for each blink (slower)
+
+  function performBlink() {
+    if (blinkCount >= maxBlinks) {
+      // Blinking complete, remove overlay and start normal intro
+      blinkingOverlay.remove();
+      playIntro(current);
+      return;
+    }
+
+    blinkCount++;
+
+    // Blink to white
+    blinkingOverlay.style.background = 'white';
+    blinkingOverlay.style.transition = `background ${blinkDuration/2}ms ease`;
+
+    setTimeout(() => {
+      // Blink back to black
+      blinkingOverlay.style.background = 'black';
+
+      // Schedule next blink after a pause
+      setTimeout(performBlink, blinkDuration);
+    }, blinkDuration/2);
+  }
+
+  // Start the blinking sequence after a brief delay
+  setTimeout(performBlink, 500);
+}
+// Exit sequence functions
+function initiateExitSequence() {
+  const blackScreen = document.getElementById('blackScreen');
+  const englishQuote = document.getElementById('englishQuote');
+  const italianQuote = document.getElementById('italianQuote');
+  const exitButton = document.getElementById('exitButton');
+  const creakSound = document.getElementById('creakSound');
+  
+  // Stop current circle sound
+  if (creakSound) {
+    creakSound.pause();
+    creakSound.currentTime = 0;
+  }
+  
+  // Hide exit button
+  exitButton.style.display = 'none';
+  
+  // Show black screen
+  blackScreen.style.display = 'flex';
+  
+  // Animate English quote first (after 500ms delay)
+  setTimeout(() => {
+    englishQuote.style.opacity = '1';
+    englishQuote.style.transform = 'translateY(0)';
+  }, 500);
+  
+  // After 3 seconds, hide English and show Italian
+  setTimeout(() => {
+    englishQuote.style.opacity = '0';
+    englishQuote.style.transform = 'translateY(-20px)';
+    
+    setTimeout(() => {
+      italianQuote.style.opacity = '1';
+      italianQuote.style.transform = 'translateY(0)';
+    }, 300);
+  }, 3000);
+  
+  // After 4 more seconds (7 seconds total), start the white transition
+  setTimeout(() => {
+    performExitTransition();
+  }, 7000);
+}
+
+function performExitTransition() {
+  const exitTransitionOverlay = document.getElementById('exitTransitionOverlay');
+  const englishQuote = document.getElementById('englishQuote');
+  const italianQuote = document.getElementById('italianQuote');
+  const heartbeatSound = document.getElementById('heartbeatSound');
+  
+  // Hide the quotes first
+  englishQuote.style.opacity = '0';
+  italianQuote.style.opacity = '0';
+  
+  // Hide all other page content
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('info').style.display = 'none';
+  document.getElementById('circleJump').style.display = 'none';
+  document.body.style.background = 'black';
+  
+  // Show transition overlay
+  exitTransitionOverlay.style.display = 'block';
+  
+  // Disable scrolling
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+
+  let whiteIntensity = 0;
+  const totalTime = 5000; // 5 seconds total
+
+  // Start slow heartbeat after a brief pause
+  setTimeout(() => {
+    if (heartbeatSound) {
+      heartbeatSound.playbackRate = 0.4; // Slow initial beat
+      heartbeatSound.volume = 1.0;
+      heartbeatSound.play().catch((err) => console.log('Heartbeat audio blocked:', err));
+    }
+
+    // Accelerate heartbeat over time
+    window.heartbeatInterval = setInterval(() => {
+      if (heartbeatSound && !heartbeatSound.paused) {
+        heartbeatSound.playbackRate += 0.15; // Gradually increase speed
+      }
+    }, 400);
+  }, 500);
+
+  // Continuously increase white intensity (from black to white)
+  const whiteInterval = setInterval(() => {
+    whiteIntensity += 0.025;
+    const opacity = Math.min(whiteIntensity, 1);
+    exitTransitionOverlay.style.backgroundColor = `rgba(255, 255, 255, ${opacity})`;
+  }, 100);
+
+  // Ensure heartbeat keeps playing if it ends
+  if (heartbeatSound) {
+    heartbeatSound.addEventListener('ended', function() {
+      heartbeatSound.play().catch((err) => console.log('Heartbeat replay blocked:', err));
+    });
+  }
+
+  // Stop effects and redirect after 5 seconds
+  setTimeout(() => {
+    clearInterval(whiteInterval);
+    if (window.heartbeatInterval) {
+      clearInterval(window.heartbeatInterval);
+      window.heartbeatInterval = null;
+    }
+    if (heartbeatSound) {
+      heartbeatSound.volume = 0;
+    }
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 300);
+  }, totalTime);
+}
+</script>
+
+<audio id="scarySound" src="scary-sound-effect-359877.mp3"></audio>
+<audio id="inhaleExhale" src="one-week-at-golden-freddys-ambience-232466.mp3" loop></audio>
+<audio id="windSound" src="wind-artificial-18750.mp3" loop></audio>
+<audio id="rainSound" src="heavy-rain-116612.mp3" loop></audio>
+<audio id="rockSound" src="falling-rock-105396.mp3"></audio>
+<audio id="riverSound" src="soothing-river-flow-372456.mp3" loop></audio>
+<audio id="fireSound" src="fire-sound-334130.mp3" loop></audio>
+<audio id="creakSound" src="scary-creaking-knocking-wood-6103.mp3" loop></audio>
+<audio id="heartbeatSound" src="heartbeat-04.mp3" loop></audio>
+</body>
+</html>
+

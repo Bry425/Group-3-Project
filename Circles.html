@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circles of Hell</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #000;
+  }
+
+  #whiteFadeOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    z-index: 9999;
+    opacity: 1;
+    pointer-events: none;
+    transition: background 0.8s, opacity 2.5s;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'IM Fell English SC', Georgia, serif;
+    color: #fff;
+    height: 100vh;
+    padding: 2vh 5vw;
+    box-sizing: border-box;
+  }
+
+  #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 4vh;
+    width: 100%;
+  }
+
+  .typewriter {
+    font-size: clamp(1.5em, 5vw, 2em);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 8px #ff3300, 0 0 16px #000;
+    white-space: pre-wrap;
+  }
+
+  #choices {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    width: 100%;
+    align-items: center;
+  }
+
+  .choice-text {
+    font-size: clamp(1em, 4vw, 1.4em);
+    color: #fff;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: color 0.2s, text-shadow 0.2s;
+    padding: 6px 0;
+    user-select: none;
+    text-align: center;
+  }
+
+  .choice-text:hover {
+    color: #ffcc00;
+    text-shadow: 0 0 8px #ff3300, 0 0 16px #b30000;
+  }
+
+  #centered-typewriter {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: 'IM Fell English SC', Georgia, serif;
+    font-size: clamp(1.8em, 5vw, 2.2em);
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px #ff3300, 0 0 20px #000;
+    white-space: pre-wrap;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <div id="whiteFadeOverlay"></div>
+  <!-- 🦶 Footsteps Audio -->
+  <audio id="footstepsAudio" src="11l-footsteps_on_a_woode-1749142821263-355541.mp3"></audio>
+  <!-- 🌊 Background Bubbling Sound -->
+  <audio id="bubblingSound" src="gunk-bubbling-in-cave-18880.mp3" loop></audio>
+
+  <div id="container" style="display:none;">
+    <div id="typewriter" class="typewriter"></div>
+    <div id="choices"></div>
+  </div>
+  <div id="centered-typewriter" style="display:none;"></div>
+
+<script>
+const typewriterDiv = document.getElementById('typewriter');
+const choicesDiv = document.getElementById('choices');
+const centerDiv = document.getElementById('centered-typewriter');
+
+const welcomeMessage = "You're a very curious man, I see. Welcome to hell.";
+let idx = 0;
+
+function typeWriter() {
+  if (idx < welcomeMessage.length) {
+    typewriterDiv.innerHTML += welcomeMessage.charAt(idx);
+    idx++;
+    setTimeout(typeWriter, 45);
+  } else {
+    showInitialChoices();
+  }
+}
+
+function showInitialChoices() {
+  showChoices([
+    { text: '> Ignore him and walk past him', callback: ignoreResponse },
+    { text: '> Who are you?', callback: whoResponse }
+  ]);
+}
+
+function showChoices(options) {
+  choicesDiv.innerHTML = '';
+  options.forEach(opt => {
+    const div = document.createElement('div');
+    div.className = 'choice-text';
+    div.innerHTML = opt.text;
+    div.onclick = () => {
+      typewriterDiv.style.display = 'none';
+      choicesDiv.innerHTML = '';
+      opt.callback();
+    };
+    choicesDiv.appendChild(div);
+  });
+}
+
+// IGNORE RESPONSE
+function ignoreResponse() {
+  centerDiv.style.display = 'flex';
+  centerDiv.innerHTML = '';
+  showCenteredTypewriterParagraphs([
+    "Ignoring me? Bold… or foolish.",
+    "I do enjoy a mortal who pretends not to notice the fire beneath their feet.",
+    "Let’s see how long that silence lasts."
+  ], showIgnoreNextChoices);
+}
+
+function showIgnoreNextChoices() {
+  centerDiv.style.display = 'none';
+  showChoices([
+    { text: '> Continue to wander around', callback: ignoreWanderResponse },
+    { text: '> At a second thought, I could use some help', callback: ignoreHelpResponse }
+  ]);
+}
+
+function ignoreWanderResponse() {
+  centerDiv.style.display = 'flex';
+  centerDiv.innerHTML = '';
+  showCenteredTypewriterParagraphs([
+    "To wander here is to choose your torment with your own two feet."
+  ], showIgnoreWanderNextChoice);
+}
+
+function showIgnoreWanderNextChoice() {
+  centerDiv.style.display = 'none';
+  showChoices([
+    { text: '> Fine, I could use some help', callback: ignoreHelpResponse }
+  ]);
+}
+
+function ignoreHelpResponse() {
+  centerDiv.style.display = 'flex';
+  centerDiv.innerHTML = '';
+  showCenteredTypewriterParagraphs([
+    "Ahhh, the proud always bend eventually.",
+    "Very well… let me show you what lies ahead."
+  ], () => {
+    setTimeout(() => {
+      window.location.href = "exploring.html";
+    }, 4000);
+  });
+}
+
+// WHO ARE YOU RESPONSE
+function whoResponse() {
+  centerDiv.style.display = 'flex';
+  centerDiv.innerHTML = '';
+  showCenteredTypewriterParagraphs([
+    "Ah, your curiosity never ends!",
+    "Names are fragile things,",
+    "easily lost in shadows…",
+    "But you may call me your companion,",
+    "your tormentor, or simply…",
+    "the one who delights in watching mortals squirm."
+  ], showWhoNextChoice);
+}
+
+function showWhoNextChoice() {
+  centerDiv.style.display = 'none';
+  showChoices([
+    { text: '> Ah… so you’re just your usual devil, but a tour guide. That’s… quite sad.', callback: devilMockResponse }
+  ]);
+}
+
+function devilMockResponse() {
+  centerDiv.style.display = 'flex';
+  centerDiv.innerHTML = '';
+  showCenteredTypewriterParagraphs([
+    "You're not just curious, but bold too…",
+    "such bold words from such fragile flesh.",
+    "Very well…",
+    "Let’s see if your courage lasts through my little playground."
+  ], showProceedDiscoveryChoice);
+}
+
+function showProceedDiscoveryChoice() {
+  centerDiv.style.display = 'none';
+  showChoices([
+    { text: '> I’m always up for new discovery', callback: devilFinalResponse }
+  ]);
+}
+
+function devilFinalResponse() {
+  centerDiv.style.display = 'flex';
+  centerDiv.innerHTML = '';
+  showCenteredTypewriterParagraphs([
+    "Very well, I shall guide you in this INFERNO."
+  ], () => {
+    setTimeout(() => {
+      window.location.href = "exploring.html";
+    }, 4000);
+  });
+}
+
+// TYPEWRITER EFFECT
+function showCenteredTypewriterParagraphs(lines, callback) {
+  let currentText = '';
+  let lineIdx = 0;
+
+  function typeLine() {
+    let i = 0;
+    const line = lines[lineIdx];
+    function typeChar() {
+      if (i < line.length) {
+        centerDiv.innerHTML = currentText + line.slice(0, i+1);
+        i++;
+        setTimeout(typeChar, 24);
+      } else {
+        currentText += line + '<br>';
+        lineIdx++;
+        if (lineIdx < lines.length) {
+          setTimeout(typeLine, 700);
+        } else if (callback) {
+          setTimeout(callback, 800);
+        }
+      }
+    }
+    typeChar();
+  }
+  typeLine();
+}
+
+window.onload = function() {
+  // Start background bubbling sound immediately
+  const bubblingSound = document.getElementById('bubblingSound');
+  bubblingSound.load(); // Reload the audio
+  bubblingSound.playbackRate = 1.0; // Set playback rate to normal speed
+  bubblingSound.volume = 0.6; // Set volume to 60%
+  
+  // Try to play with error handling and debugging
+  bubblingSound.play().then(() => {
+    console.log('Bubbling sound started playing');
+  }).catch((error) => {
+    console.log('Could not play bubbling sound:', error);
+  });
+  
+  // Enable audio on first user interaction (helps with autoplay restrictions)
+  document.addEventListener('click', function() {
+    bubblingSound.play().catch(() => {});
+  }, { once: true });
+  
+  // 3-blink effect: white-black-white-black-white-black-white-fade out
+  const overlay = document.getElementById('whiteFadeOverlay');
+  
+  // Helper for blink sequence
+  function blinkSequence(steps, onDone) {
+    if (steps.length === 0) { 
+      // Wait for the final transition to complete before calling onDone
+      setTimeout(onDone, 600); // 600ms transition time
+      return; 
+    }
+    const [color, duration] = steps[0];
+    overlay.style.transition = 'background 0.6s';
+    overlay.style.background = color;
+    setTimeout(() => blinkSequence(steps.slice(1), onDone), duration);
+  }
+
+  // Sequence: [color, duration in ms]
+  const blinks = [
+    ['#fff', 1200], // initial white
+    ['#000', 1200],
+    ['#fff', 1200],
+    ['#000', 1200],
+    ['#fff', 1200],
+    ['#000', 1200],
+    ['#fff', 1200],
+    ['#000', 1500], // black background after white
+  ];
+
+  blinkSequence(blinks, () => {
+    // Play footsteps audio before dialogue starts
+    const footstepsAudio = document.getElementById('footstepsAudio');
+    footstepsAudio.playbackRate = 1.0;
+    footstepsAudio.volume = 1.0; // Increased volume to maximum
+    footstepsAudio.play().catch(() => {});
+    
+    // Wait for footsteps to play, then start dialogue
+    setTimeout(() => {
+      // Stop footsteps when dialogue starts
+      footstepsAudio.pause();
+      footstepsAudio.currentTime = 0;
+      
+      // Start dialogue
+      overlay.style.transition = 'opacity 2.5s';
+      overlay.style.opacity = 0;
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        document.getElementById('container').style.display = '';
+        document.getElementById('centered-typewriter').style.display = 'none';
+        typeWriter();
+      }, 2500);
+    }, 5000); // Wait 5 seconds for footsteps to play
+  });
+};
+</script>
+</body>
+</html>
+
+
+
+
