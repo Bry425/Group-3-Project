@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dante's Inferno - Presentation</title>
+<!-- Local fonts from fonts folder -->
+<style>
+  @font-face {
+    font-family: 'UnifrakturCook';
+    src: url('fonts/UnifrakturCook-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'IM Fell English SC';
+    src: url('fonts/IMFellEnglishSC-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Pirata One';
+    src: url('fonts/PirataOne-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+</style>
+<style>
+  /* Body */
+  body {
+    font-family: "Georgia", serif;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+    background: url("dantes-inferno-bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    text-align: center; /* Center all text globally */
+  }
+
+  /* Initial black screen */
+  #initialBlackScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 2s ease;
+  }
+
+  #oddText {
+    color: white;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-family: 'Pirata One', 'UnifrakturCook', Georgia, serif;
+    font-weight: 700;
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.5),
+      0 0 20px rgba(255, 255, 255, 0.3),
+      2px 2px 10px #000,
+      0 0 2px #fff;
+    letter-spacing: 2px;
+    text-align: center;
+    animation: slide-letters 3s ease-out 1s both, pulse-odd 2s infinite alternate 4s;
+  }
+
+  @keyframes slide-letters {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  #oddText span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateX(-50px);
+    animation: slide-in-letter 0.5s ease-out forwards;
+  }
+
+  #oddText span:nth-child(1) { animation-delay: 0.2s; }
+  #oddText span:nth-child(2) { animation-delay: 0.4s; }
+  #oddText span:nth-child(3) { animation-delay: 0.6s; }
+  #oddText span:nth-child(4) { animation-delay: 0.8s; }
+  #oddText span:nth-child(5) { animation-delay: 1.0s; }
+  #oddText span:nth-child(6) { animation-delay: 1.2s; }
+  #oddText span:nth-child(7) { animation-delay: 1.4s; }
+  #oddText span:nth-child(8) { animation-delay: 1.6s; }
+  #oddText span:nth-child(9) { animation-delay: 1.8s; }
+  #oddText span:nth-child(10) { animation-delay: 2.0s; }
+  #oddText span:nth-child(11) { animation-delay: 2.2s; }
+  #oddText span:nth-child(12) { animation-delay: 2.4s; }
+
+  @keyframes slide-in-letter {
+    0% {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes pulse-odd {
+    0% {
+      text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.3),
+        2px 2px 10px #000,
+        0 0 2px #fff;
+      filter: brightness(1);
+    }
+    100% {
+      text-shadow:
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.5),
+        2px 2px 15px #000,
+        0 0 5px #fff;
+      filter: brightness(1.2);
+    }
+  }
+
+  /* Dark overlay - only for background image */
+  #darkOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 1;
+    pointer-events: none;
+    z-index: -1;
+    transition: background-color 0.2s;
+  }
+
+  /* Dark overlay for background image */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, var(--bg-darkness, 0));
+    pointer-events: none;
+    z-index: -1;
+    transition: background 0.3s ease;
+  }
+
+  /* Content container */
+  .content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px; /* tighter width for central alignment */
+    margin: 0 auto;
+    padding: 3vh 2vw;
+    min-height: 10000px; /* Keep long scroll */
+    padding-bottom: 15vh;
+  }
+
+  header {
+    text-align: center; /* center header */
+    margin-bottom: 4vh;
+  }
+
+  header h1 {
+    font-size: clamp(2rem, 4vw, 4rem);
+    font-weight: bold;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+    margin: 0;
+  }
+
+  header p {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    margin-top: 0.5rem;
+  }
+
+  main {
+    background: rgba(0,0,0,0.55);
+    padding: 2vh 2vw;
+    border-radius: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    color: white;
+    margin: 0 auto 4vh auto; /* center main block */
+    text-align: center;
+  }
+
+  h2 {
+    color: #ff4c4c;
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+  }
+
+  ul {
+    margin: 0 auto 1rem auto; /* center bullet lists */
+    text-align: left;          /* bullets remain readable */
+    display: inline-block;     /* shrink width to fit content */
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+  }
+
+  /* Scroll arrow */
+  #scrollArrow {
+    position: fixed;
+    bottom: 1.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: white;
+    cursor: pointer;
+    z-index: 3;
+    animation: bounce 1.5s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, -15px); }
+  }
+
+  /* Spooky warning texts */
+  .spooky-warning {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-family: 'Pirata One', 'UnifrakturCook', Georgia, serif;
+    color: #ff3300;
+    text-shadow: 0 0 8px #ff6600, 2px 2px 8px #000;
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+    transition: opacity 0.5s;
+    width: 90vw;
+    max-width: 700px;
+  }
+  #spooky1 { top: 30%; }
+  #spooky2 { top: 38%; }
+  #spooky3 { top: 46%; }
+
+  /* Warning words */
+  #warningText {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-family: 'IM Fell English SC', 'UnifrakturCook', Georgia, serif;
+    font-weight: 700;
+    color: #ff3300;
+    text-shadow:
+      0 0 8px #ff6600,
+      0 0 16px #ff3300,
+      2px 2px 8px #000,
+      0 0 2px #fff;
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+    letter-spacing: 2px;
+    transition: opacity 0.3s;
+    width: 90vw;
+    max-width: 1000px;
+  }
+
+  .warning-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateX(-80px);
+    transition: opacity 0.4s, transform 0.6s cubic-bezier(0.7,0,0.3,1);
+    will-change: opacity, transform;
+  }
+
+  .warning-word.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Enter Hell Button */
+  #enterHellBtn {
+    display: none;
+    position: absolute;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: clamp(0.8rem, 2vw, 1.5rem) clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(1.2rem, 2vw, 1.7rem);
+    background: linear-gradient(90deg, #ff3300 40%, #b30000 100%);
+    color: #fffbe6;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    text-shadow: 2px 2px 8px #000, 0 0 10px #ff6600;
+    z-index: 2;
+    box-shadow: 0 0 30px 5px #ff330088, 0 0 10px 2px #b30000;
+    animation: pulse-tempt 1.2s infinite alternate;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'UnifrakturCook', Georgia, serif;
+    letter-spacing: 2px;
+  }
+
+  @keyframes pulse-tempt {
+    0% {
+      box-shadow: 0 0 30px 5px #ff330088, 0 0 10px 2px #b30000;
+      filter: brightness(1);
+    }
+    100% {
+      box-shadow: 0 0 60px 20px #ff6600cc, 0 0 20px 6px #b30000;
+      filter: brightness(1.15);
+    }
+  }
+
+  #enterHellBtn:hover {
+    animation: wiggle 0.4s;
+    background: linear-gradient(90deg, #ff6600 40%, #ff3300 100%);
+    color: #fff;
+    box-shadow: 0 0 80px 20px #ff6600cc, 0 0 30px 8px #b30000;
+    transform: translateX(-50%) rotate(-2deg) scale(1.07);
+  }
+
+  @keyframes wiggle {
+    0% { transform: translateX(-50%) rotate(0deg) scale(1.07); }
+    25% { transform: translateX(-50%) rotate(-5deg) scale(1.09); }
+    50% { transform: translateX(-50%) rotate(3deg) scale(1.11); }
+    75% { transform: translateX(-50%) rotate(-2deg) scale(1.08); }
+    100% { transform: translateX(-50%) rotate(0deg) scale(1.07); }
+  }
+
+  /* Custom popup */
+  #customPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff3300;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-family: 'Pirata One', 'UnifrakturCook', Georgia, serif;
+    font-weight: 700;
+    display: none;
+    z-index: 10;
+    text-align: center;
+    background: none;
+    border: none;
+    text-shadow:
+      0 0 10px #ff6600,
+      0 0 20px #ff3300,
+      2px 2px 10px #000,
+      0 0 2px #fff;
+    letter-spacing: 2px;
+  }
+
+  /* Small screens */
+  @media (max-width: 600px) {
+    header h1 { font-size: 2rem; }
+    header p { font-size: 0.9rem; }
+    main { padding: 2vw; }
+    #scrollArrow { font-size: 1.5rem; }
+    .spooky-warning { font-size: 1.2rem; }
+    #warningText { font-size: 1.5rem; }
+    #enterHellBtn { font-size: 1.2rem; padding: 0.8rem 1.5rem; }
+    #customPopup { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="initialBlackScreen">
+  <div id="oddText"><span>T</span><span>h</span><span>a</span><span>t</span><span>s</span><span>&nbsp;</span><span>o</span><span>d</span><span>d</span><span>.</span><span>.</span><span>.</span></div>
+</div>
+
+<div id="darkOverlay"></div>
+<div id="whiteOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: white; z-index: 9999; opacity: 0; pointer-events: none;"></div>
+
+<div class="content">
+  <div class="spooky-warning" id="spooky1">Curiosity killed the cat...</div>
+  <div class="spooky-warning" id="spooky2">Some doors are best left unopened.</div>
+  <div class="spooky-warning" id="spooky3">You really shouldn't peer any further...</div>
+
+  <header>
+    <h1>Dante’s Inferno</h1>
+    <p>By Group 3</p>
+  </header>
+
+  <main>
+    <h2>Background</h2>
+    <ul>
+      <li>Written by Dante Alighieri in the early 1300s while in exile from Florence.</li>
+      <li>Part of <em>The Divine Comedy</em>, which has three sections: <em>Inferno</em>, <em>Purgatorio</em>, and <em>Paradiso</em>.</li>
+      <li>Serves as the opening journey toward spiritual growth.</li>
+    </ul>
+
+    <h2>Story and Characters</h2>
+    <ul>
+      <li>Dante is both the narrator and main character of the poem.</li>
+      <li>Guided by the Roman poet Virgil, who represents human reason.</li>
+      <li>Meets historical, mythological, and contemporary figures along the way.</li>
+    </ul>
+
+    <h2>Literary Style</h2>
+    <ul>
+      <li>Written in Italian vernacular instead of Latin, making it accessible to more people.</li>
+      <li>Uses <strong>terza rima</strong>, a three-line rhyming pattern.</li>
+    </ul>
+
+    <h2>Main Ideas</h2>
+    <ul>
+      <li>Not just about punishment, but about choices, morality, and consequences.</li>
+      <li>Criticizes corruption, injustice, and human weakness.</li>
+      <li>Reflects medieval beliefs but raises timeless questions about right and wrong.</li>
+    </ul>
+
+    <h2>Importance</h2>
+    <ul>
+      <li>Still influences art, literature, films, and games today.</li>
+      <li>Works as a religious, philosophical, and cultural text.</li>
+    </ul>
+
+    <p><strong>In summary:</strong> Dante’s <em>Inferno</em> is an allegory about the human journey, morality, and redemption, with lasting cultural impact for over 700 years.</p>
+
+    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 30px;">
+      <button id="detailedBtn" style="
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        background: linear-gradient(90deg, #8B0000 40%, #DC143C 100%);
+        color: #fffbe6;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-shadow: 2px 2px 4px #000;
+        font-family: 'IM Fell English SC', Georgia, serif;
+        letter-spacing: 1px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      ">Detailed Explanation</button>
+    </div>
+  </main>
+
+  <div id="scrollArrow">&#8595;</div>
+  <div id="warningText"></div>
+  <button id="enterHellBtn">Enter Hell</button>
+  <div id="customPopup">You Were Warned</div>
+</div>
+
+<script>
+const overlay = document.getElementById('darkOverlay');
+const warning = document.getElementById('warningText');
+const enterBtn = document.getElementById('enterHellBtn');
+const detailedBtn = document.getElementById('detailedBtn');
+const popup = document.getElementById('customPopup');
+const scrollArrow = document.getElementById('scrollArrow');
+const warningWords = "Abandon All Hope Ye Who Enter Here".split(" ");
+const heartbeat = new Audio('heartbeat-04.mp3');
+let heartbeatInterval;
+let playbackRate = 1.0;
+
+// Initial black screen elements
+const initialBlackScreen = document.getElementById('initialBlackScreen');
+const oddText = document.getElementById('oddText');
+
+// Track if audio has started
+let audioStarted = false;
+
+// Function to hide initial black screen
+function hideInitialBlackScreen() {
+  if (initialBlackScreen.style.opacity !== '0') {
+    initialBlackScreen.style.opacity = '0';
+    setTimeout(() => {
+      initialBlackScreen.style.display = 'none';
+    }, 2000);
+  }
+}
+
+// Auto-hide after 4 seconds
+setTimeout(hideInitialBlackScreen, 4000);
+
+// Function to start background music
+function startBackgroundMusic() {
+    if (!audioStarted) {
+        const bgMusic = document.getElementById('bgMusic');
+        bgMusic.volume = 0.5; // Increased volume for better audibility
+        bgMusic.play().then(() => {
+            audioStarted = true;
+        }).catch(error => {
+            console.log("Audio play failed:", error);
+        });
+    }
+}
+
+// Start audio on first scroll or click
+document.addEventListener('click', startBackgroundMusic, { once: true });
+document.addEventListener('scroll', startBackgroundMusic, { once: true });
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  const scrollPercent = Math.min(scrollTop / docHeight, 1);
+
+  // Control the background image darkening
+  document.body.style.setProperty('--bg-darkness', scrollPercent);
+
+  // Debug: log the value
+  console.log('Scroll percent:', scrollPercent, 'Darkness:', scrollPercent);
+
+  document.getElementById('spooky1').style.opacity = (scrollPercent > 0.18 && scrollPercent < 0.32) ? '1' : '0';
+  document.getElementById('spooky2').style.opacity = (scrollPercent > 0.32 && scrollPercent < 0.46) ? '1' : '0';
+  document.getElementById('spooky3').style.opacity = (scrollPercent > 0.46 && scrollPercent < 0.7) ? '1' : '0';
+
+  const revealStart = 0.85;
+  const revealEnd = 0.97;
+  if (scrollPercent > revealStart && scrollPercent <= revealEnd) {
+    warning.style.opacity = 1;
+    let totalWords = warningWords.length;
+    let progress = (scrollPercent - revealStart) / (revealEnd - revealStart);
+    let wordsToShow = Math.max(1, Math.ceil(progress * totalWords));
+    if (wordsToShow > totalWords) wordsToShow = totalWords;
+    warning.innerHTML = warningWords.map((w, i) => `<span class="warning-word${i < wordsToShow ? ' visible' : ''}">${w}</span>`).join(' ');
+    enterBtn.style.display = "none";
+  } else if (scrollPercent > 0.97) {
+    warning.style.opacity = 1;
+    warning.innerHTML = warningWords.map((w) => `<span class="warning-word visible">${w}</span>`).join(' ');
+    enterBtn.style.display = "block";
+  } else {
+    warning.style.opacity = 0;
+    warning.innerHTML = '';
+    enterBtn.style.display = "none";
+  }
+
+  scrollArrow.style.display = scrollPercent > 0.93 ? "none" : "block";
+});
+
+scrollArrow.addEventListener('click', () => {
+  window.scrollBy({ top: window.innerHeight / 2, behavior: 'smooth' });
+});
+
+// Add cleanup for heartbeat when leaving the page
+window.addEventListener('beforeunload', () => {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+  }
+  heartbeat.pause();
+});
+
+enterBtn.addEventListener('click', () => {
+  // Hide warning text and enter button
+  warning.style.display = 'none';
+  enterBtn.style.display = 'none';
+  popup.style.display = 'none';
+  
+  // Stop the ambient sound
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.pause();
+
+  // Disable scrolling
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+
+  const whiteOverlay = document.getElementById('whiteOverlay');
+  let whiteIntensity = 0;
+  const totalTime = 12500; // 1.5s pause + 10s heartbeat sequence + 2s white
+
+  // Wait 1.5 seconds before starting the heartbeat
+  setTimeout(() => {
+    // Start with a very slow, loud heartbeat
+    heartbeat.playbackRate = 0.5; // Very slow initial beat
+    heartbeat.volume = 1.0; // Full volume
+    heartbeat.play();
+
+    // Phase 1: Very slow heartbeat for 2.5 seconds
+    setTimeout(() => {
+      playbackRate = 0.8;
+      heartbeat.playbackRate = playbackRate;
+
+      // Phase 2: Slow heartbeat for 2.5 seconds
+      setTimeout(() => {
+        playbackRate = 1.2;
+        heartbeat.playbackRate = playbackRate;
+
+        // Phase 3: Medium heartbeat for 2.5 seconds
+        setTimeout(() => {
+          playbackRate = 1.5;
+          heartbeat.playbackRate = playbackRate;
+
+          // Phase 4: Fast and accelerating for 2.5 seconds
+          heartbeatInterval = setInterval(() => {
+            playbackRate += 0.25;
+            heartbeat.playbackRate = playbackRate;
+          }, 300);
+        }, 2500);
+      }, 2500);
+    }, 2500);
+  }, 1500); // 1.5 second pause
+
+  // Continuously increase white intensity
+  const whiteInterval = setInterval(() => {
+    whiteIntensity += 0.015;
+    whiteOverlay.style.opacity = Math.min(whiteIntensity, 1).toString();
+  }, 100);
+
+  // Ensure heartbeat keeps playing if it ends
+  heartbeat.addEventListener('ended', function() {
+    heartbeat.play();
+  });
+
+  // Stop the effects at 9 seconds (screen should be white by now)
+  setTimeout(() => {
+    clearInterval(whiteInterval);
+    clearInterval(heartbeatInterval);
+    whiteOverlay.style.opacity = '1';
+    heartbeat.volume = 0; // Fade out the heartbeat
+  }, totalTime - 2000); // 2s before redirect
+
+  // Redirect after the full sequence
+  setTimeout(() => {
+    window.location.href = "exploring.html";
+  }, totalTime);
+});
+
+// Add detailed explanation button functionality
+detailedBtn.addEventListener('click', () => {
+  window.location.href = "Detailed.html";
+});
+</script>
+
+</body>
+<audio id="bgMusic" src="ambinet-hell-23836.mp3" loop style="display: none;"></audio>
+</html>
